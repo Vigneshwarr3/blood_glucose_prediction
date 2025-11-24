@@ -225,7 +225,7 @@ class TimeSeriesGAN:
         
         # Initialize networks
         # Generator needs noise_dim and output_dim (which is input_dim)
-        self.generator = Generator(noise_dim, input_dim, hidden_dim, num_layers).to(self.device)
+        self.generator = Generator(noise_dim, hidden_dim, num_layers, input_dim).to(self.device)
         self.discriminator = Discriminator(input_dim, hidden_dim, num_layers).to(self.device)
         self.supervisor = Supervisor(input_dim, hidden_dim, num_layers).to(self.device)
         
@@ -456,16 +456,15 @@ def generate_synthetic_data(gan, scaler, feature_names, n_samples=100, seq_len=2
 
 if __name__ == "__main__":
     # Load your data (from the CSV you created earlier)
-    df = pd.read_csv('data/train/559-ws-training_all_features.csv')
+    df = pd.read_csv('training_data.csv')
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     
     # Select features to generate based on actual columns in the CSV
     # Exclude non-numeric columns: timestamp, patient, event
     numeric_features = [
-        'glucose_level', 'finger_stick', 'basal', 'temp_basal', 'bolus', 'meal',
-        'sleep', 'work', 'stressors', 'hypo_event', 'illness', 'exercise',
-        'basis_heart_rate', 'basis_gsr', 'basis_skin_temperature',
-        'basis_air_temperature', 'basis_steps', 'basis_sleep'
+        'glucose_level', 'finger_stick', 'basal', 'temp_basal', 'bolus', 'meal_carbs',
+        'exercise_intensity', 'exercise_duration', 'basis_heart_rate', 'basis_gsr',
+        'basis_skin_temperature', 'basis_air_temperature', 'basis_steps'
     ]
     
     # Filter to only include features that actually exist in the DataFrame
